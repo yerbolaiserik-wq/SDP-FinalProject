@@ -1,0 +1,40 @@
+@startuml
+title Place and Prepare an Order
+actor Customer
+participant RestaurantPanel as UI
+participant RestaurantFacade as Facade
+participant MenuFactory as Menu
+participant MealFactory as Factory
+participant MealDecorator as Toppings
+participant DiscountStrategy as Discount
+participant XmlOrderRepository as Store
+participant OrderEventSource as Events
+participant KitchenDisplay as Kitchen
+participant CustomerDisplay as Notices
+Customer -> UI : choose menu family, meal and toppings
+UI -> Facade : createMeal(family, type, toppings)
+Facade -> Menu : createMeal(type)
+Menu -> Factory : createMeal()
+Factory --> Menu : base meal
+Menu --> Facade : family meal
+Facade -> Toppings : wrap meal
+Toppings --> Facade : decorated meal
+Facade --> UI : description and price
+opt Matching drink selected
+    UI -> Facade : createDrink(family)
+    Facade -> Menu : createDrink()
+    Menu --> Facade : family drink
+    Facade --> UI : description and price
+end
+Customer -> UI : place order
+UI -> Facade : placeOrder(...)
+Facade -> Discount : discountCents(subtotal)
+Discount --> Facade : discount
+Facade -> Store : save(placed order)
+Store --> Facade : saved
+Facade -> Events : publish(OrderEvent)
+Events -> Kitchen : onOrderChanged(event)
+Events -> Notices : onOrderChanged(event)
+Facade --> UI : order
+UI --> Customer : receipt
+@enduml

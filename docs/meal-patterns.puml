@@ -1,0 +1,63 @@
+@startuml
+title Restaurant Meal Creation and Pricing
+skinparam classAttributeIconSize 0
+interface Meal {
+  +description() : String
+  +priceCents() : long
+}
+abstract class MealFactory {
+  +createMeal() : Meal
+}
+class PizzaFactory
+class BurgerFactory
+class PastaFactory
+class VegetarianMealFactory
+class Pizza
+class Burger
+class Pasta
+class VegetarianMeal
+MealFactory <|-- PizzaFactory
+MealFactory <|-- BurgerFactory
+MealFactory <|-- PastaFactory
+MealFactory <|-- VegetarianMealFactory
+MealFactory ..> Meal : creates
+PizzaFactory ..> Pizza : creates
+BurgerFactory ..> Burger : creates
+PastaFactory ..> Pasta : creates
+VegetarianMealFactory ..> VegetarianMeal : creates
+Meal <|.. Pizza
+Meal <|.. Burger
+Meal <|.. Pasta
+Meal <|.. VegetarianMeal
+abstract class MealDecorator {
+  #meal : Meal
+}
+Meal <|.. MealDecorator
+MealDecorator o-- Meal : wraps
+MealDecorator <|-- ExtraCheese
+MealDecorator <|-- Mushrooms
+MealDecorator <|-- ExtraSauce
+interface DiscountStrategy {
+  +name() : String
+  +discountCents(subtotal : long) : long
+}
+DiscountStrategy <|.. NoDiscount
+DiscountStrategy <|.. StudentDiscount
+DiscountStrategy <|.. LoyaltyDiscount
+interface MenuFactory {
+  +createMeal(type : MealType) : Meal
+  +createDrink() : Drink
+}
+interface Drink {
+  +description() : String
+  +priceCents() : long
+}
+MenuFactory <|.. RegularMenuFactory
+MenuFactory <|.. VegetarianMenuFactory
+RegularMenuFactory --> MealFactory : selects a regular creator
+VegetarianMenuFactory --> VegetarianMealFactory : selects a vegetarian creator
+RegularMenuFactory ..> Cola : creates
+VegetarianMenuFactory ..> Lemonade : creates
+Drink <|.. Cola
+Drink <|.. Lemonade
+@enduml

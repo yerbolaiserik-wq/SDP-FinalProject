@@ -1,0 +1,47 @@
+@startuml
+title Restaurant Ordering Workflow
+skinparam classAttributeIconSize 0
+class RestaurantPanel
+class RestaurantFacade {
+  +createMeal(family, type, toppings) : Meal
+  +createDrink(family) : Drink
+  +quoteDiscount(items, discount) : long
+  +placeOrder(customer, items, discount) : Order
+  +changeStatus(id, next) : Order
+}
+RestaurantPanel --> RestaurantFacade : selects menu and manages orders
+RestaurantFacade --> MenuFactory : selects menu family
+RestaurantFacade --> MealDecorator
+RestaurantFacade --> DiscountStrategy
+interface OrderRepository {
+  +all() : List<Order>
+  +find(id) : Optional<Order>
+  +save(order) : void
+}
+OrderRepository <|.. XmlOrderRepository
+RestaurantFacade --> OrderRepository : persists before notification
+interface OrderSubject {
+  +subscribe(observer)
+  +unsubscribe(observer)
+  +publish(event)
+}
+interface OrderObserver {
+  +onOrderChanged(event : OrderEvent)
+}
+OrderSubject <|.. OrderEventSource
+OrderObserver <|.. KitchenDisplay
+OrderObserver <|.. CustomerDisplay
+OrderEventSource --> OrderObserver : notifies snapshot
+RestaurantFacade --> OrderSubject : publishes
+class Order <<record>> {
+  +items : List<OrderLine>
+  +status : OrderStatus
+  +withStatus(next) : Order
+  +totalCents() : long
+}
+class OrderLine <<record>>
+class OrderEvent <<record>>
+Order *-- OrderLine
+OrderEvent --> Order
+RestaurantFacade --> Order
+@enduml

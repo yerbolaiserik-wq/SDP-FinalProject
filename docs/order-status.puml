@@ -1,0 +1,11 @@
+@startuml
+title Order Status Transitions
+[*] --> Placed
+Placed --> Preparing
+Placed --> Cancelled
+Preparing --> Ready
+Preparing --> Cancelled
+Ready --> Completed
+Completed --> [*]
+Cancelled --> [*]
+@enduml
