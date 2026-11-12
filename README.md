@@ -1,6 +1,10 @@
 # Restaurant Ordering System
+- Author: Yerbol Aisyerik from SE-2536
+- Created in 2026.11.09
 
-Java 17 desktop application for creating meals, adding toppings, placing orders, tracking kitchen progress and receiving customer notifications.
+Java project desktop application for creating meals, adding toppings, placing orders, tracking kitchen progress and receiving customer notifications.
+In this project, included 6 design pattern strategies. 
+
 
 Factory Method, Abstract Factory, Decorator, Observer, Strategy and Facade are integrated into the ordering workflow. Regular and vegetarian menu families supply meals and matching drinks. Order history is stored in `data/orders.xml`. Notification feeds and the event log belong to the current application session.
 
